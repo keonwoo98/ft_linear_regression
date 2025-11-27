@@ -52,7 +52,7 @@ def main():
     print("="*60 + "\n")
 
     # Load trained parameters
-    theta0, theta1, norm_params = load_theta('models/theta.json')
+    theta0, theta1, _ = load_theta('models/theta.json')
 
     # Check if model has been trained
     if theta0 == 0 and theta1 == 0:

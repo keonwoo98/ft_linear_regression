@@ -17,7 +17,6 @@ from utils import (
     estimate_price,
     calculate_cost
 )
-import json
 
 
 def gradient_descent(mileages, prices, learning_rate=0.01, iterations=1000,
@@ -150,12 +149,6 @@ def main():
     }
 
     save_theta(theta0, theta1, normalization_params=normalization_params)
-
-    # Save cost history for visualization
-    os.makedirs('models', exist_ok=True)
-    with open('models/cost_history.json', 'w') as f:
-        json.dump({'cost_history': cost_history}, f, indent=2)
-    print("✓ Cost history saved for visualization")
 
     # Show some example predictions
     print("\n" + "="*60)
