@@ -2,304 +2,112 @@
 
 An introduction to machine learning - Simple linear regression implementation using gradient descent.
 
-## 📋 Project Overview
+## Overview
 
-This project implements a **linear regression algorithm** from scratch to predict car prices based on mileage. The implementation uses **gradient descent** optimization without relying on high-level ML libraries.
+Predict car prices based on mileage using **linear regression** with **gradient descent** optimization.
 
-### Key Concepts
+**Linear Hypothesis:** `price = θ₀ + θ₁ × mileage`
 
-- **Linear Hypothesis**: `price = θ₀ + θ₁ × mileage`
-- **Gradient Descent**: Iterative optimization algorithm
-- **Feature Normalization**: Data scaling for better convergence
-- **Cost Function**: Mean Squared Error (MSE)
-
-## 🚀 Quick Start
-
-### Installation
+## Quick Start
 
 ```bash
-# Install dependencies (optional, only needed for bonus visualization)
-pip install -r requirements.txt
-```
-
-### Training the Model
-
-```bash
+# 1. Train the model
 python3 src/train.py
-```
 
-**Output:**
-- Trains the model on [data/data.csv](data/data.csv)
-- Saves parameters to `models/theta.json`
-- Displays training progress and example predictions
-
-### Making Predictions
-
-```bash
+# 2. Make predictions
 python3 src/predict.py
 ```
 
-**Interactive mode:**
-- Prompts for mileage input
-- Returns estimated price
-- Allows multiple predictions
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 ft_linear_regression/
 ├── data/
-│   └── data.csv              # Training dataset (24 samples)
-├── models/
-│   └── theta.json            # Saved model parameters
+│   └── data.csv          # Training data (24 samples)
 ├── src/
-│   ├── train.py              # Training program (gradient descent)
-│   ├── predict.py            # Prediction program
-│   └── utils.py              # Helper functions
-├── bonus/                    # Bonus features (visualization, metrics)
-├── requirements.txt          # Python dependencies
-└── README.md
+│   ├── train.py          # Training program
+│   ├── predict.py        # Prediction program
+│   └── utils.py          # Helper functions
+├── bonus/
+│   ├── visualize.py      # Data visualization
+│   └── precision.py      # Model accuracy metrics
+└── models/
+    └── theta.json        # Saved parameters
 ```
 
-## 🧮 Algorithm Details
+## Algorithm
 
-### Gradient Descent Implementation
+### Linear Regression
 
-**Update Rules** (from project PDF):
+Find the best-fit line through data points to make predictions.
 
+```
+estimatePrice(mileage) = θ₀ + θ₁ × mileage
+```
+
+- **θ₀ (intercept)**: Base price when mileage = 0
+- **θ₁ (slope)**: Price change per km (negative = price decreases)
+
+### Gradient Descent
+
+Iteratively adjust θ₀ and θ₁ to minimize prediction error.
+
+**Update Rules:**
 ```
 tmpθ₀ = learningRate × (1/m) × Σ(estimatePrice(mileage[i]) - price[i])
 tmpθ₁ = learningRate × (1/m) × Σ((estimatePrice(mileage[i]) - price[i]) × mileage[i])
+
+θ₀ = θ₀ - tmpθ₀
+θ₁ = θ₁ - tmpθ₁
 ```
 
-Where:
-- **m**: Number of training examples
-- **learningRate**: 0.1 (tunable)
-- **Σ**: Sum over all training samples
+**How it works:**
+1. Start with θ₀ = 0, θ₁ = 0
+2. Calculate prediction error for all data points
+3. Adjust θ₀ and θ₁ in the direction that reduces error
+4. Repeat until error stops decreasing
 
-**Key Features:**
-- ✅ Simultaneous parameter updates (using temporary variables)
-- ✅ Feature normalization (mean/std scaling)
-- ✅ Cost function monitoring (MSE)
-- ✅ No prohibited libraries (numpy.polyfit, sklearn, etc.)
+### Feature Normalization
 
-### Current Model Performance
-
-**Trained Parameters:**
-- **θ₀** (intercept): 8499.60
-- **θ₁** (slope): -0.0214
-
-**Interpretation:**
-- Base price: ~8,500 when mileage = 0
-- Price decreases by ~0.021 per km
-- Negative correlation between mileage and price ✓
-
-**Example Predictions:**
-
-| Mileage (km) | Estimated Price |
-|--------------|-----------------|
-| 50,000       | 7,427           |
-| 100,000      | 6,355           |
-| 150,000      | 5,282           |
-| 200,000      | 4,210           |
-
-## 📊 Dataset Information
-
-**Source:** [data/data.csv](data/data.csv)
-
-- **Samples:** 24
-- **Features:** 1 (mileage in km)
-- **Target:** Price
-- **Mileage range:** 22,899 - 240,000 km
-- **Price range:** 3,650 - 8,290
-
-## 🎯 Implementation Checklist
-
-### Mandatory Part ✅
-
-- [x] **predict.py** - Price prediction program
-  - [x] Prompts for mileage input
-  - [x] Uses hypothesis: `estimatePrice = θ₀ + θ₁ × mileage`
-  - [x] Handles untrained model (θ₀=0, θ₁=0)
-  - [x] Input validation
-
-- [x] **train.py** - Model training program
-  - [x] Reads dataset from CSV
-  - [x] Implements gradient descent from scratch
-  - [x] Uses specified formulas from PDF
-  - [x] Simultaneous parameter updates
-  - [x] Saves θ₀ and θ₁ to file
-
-- [x] **utils.py** - Helper functions
-  - [x] Data loading and normalization
-  - [x] Parameter persistence (save/load)
-  - [x] Cost function calculation
-
-### Bonus Part 🎁
-
-- [x] Data visualization (scatter plot)
-- [x] Regression line plotting
-- [x] Precision calculation (R², MAE, RMSE)
-- [x] Cost function convergence visualization
-- [x] Residual analysis
-
-## 🛠️ Technical Details
-
-### Why Feature Normalization?
-
-**Problem:** Original data has large ranges
-- Mileage: 22,899 - 240,000 (variance ~10¹⁰)
-- Price: 3,650 - 8,290 (variance ~10⁶)
-
-**Solution:** Normalize using z-score
-```python
+Scale data to improve convergence:
+```
 normalized = (x - mean) / std
 ```
 
-**Benefits:**
-- ✅ Faster convergence
-- ✅ Better numerical stability
-- ✅ Learning rate easier to tune
+**Why?** Original mileage values (22,899 ~ 240,000) cause unstable learning. Normalization centers data around 0.
 
-### Hyperparameter Tuning
+### Key Implementation Details
 
-**Current Settings:**
-- Learning Rate: 0.1
-- Iterations: 1000
+- Simultaneous parameter updates (using tmp variables)
+- Z-score normalization for stable training
+- No prohibited libraries (numpy.polyfit, sklearn, etc.)
 
-**How to adjust:**
-Edit in [src/train.py](src/train.py):
-```python
-LEARNING_RATE = 0.1  # Increase for faster learning, decrease if diverging
-ITERATIONS = 1000     # Increase if not converged
-```
+## Model Performance
 
-## 📖 Usage Examples
+| Metric | Value |
+|--------|-------|
+| R² Score | 0.7330 (73% variance explained) |
+| Prediction Accuracy | 90.35% |
+| θ₀ (intercept) | 8499.60 |
+| θ₁ (slope) | -0.0214 |
 
-### Basic Usage
+## Bonus Features
 
 ```bash
-# 1. Train model
-$ python3 src/train.py
-
-# 2. Make prediction
-$ python3 src/predict.py
-Enter mileage (km): 100000
-
-============================================================
-  📊 ESTIMATION RESULT
-============================================================
-  Mileage: 100,000 km
-  Estimated Price: 6,354.70
-============================================================
-```
-
-### Before Training
-
-```bash
-$ python3 src/predict.py
-⚠️  Warning: Model not trained yet!
-   Using default parameters (θ₀=0, θ₁=0)
-   Run train.py first for accurate predictions.
-```
-
-## 🔬 Validation
-
-**Cost Function Convergence:**
-- Initial cost: 0.430367
-- Final cost: 0.133513
-- Converged after ~100 iterations ✓
-
-**Sanity Checks:**
-- ✅ Negative slope (higher mileage → lower price)
-- ✅ Reasonable price range (4,000 - 7,500)
-- ✅ No division by zero errors
-- ✅ No prohibited libraries used
-
-## 📚 Learning Resources
-
-**Concepts Covered:**
-- Supervised learning fundamentals
-- Linear regression theory
-- Gradient descent optimization
-- Feature scaling techniques
-- Model evaluation metrics
-
-**Formula Reference:**
-- Hypothesis: `h(x) = θ₀ + θ₁x`
-- Cost: `J(θ) = (1/2m) Σ(h(x⁽ⁱ⁾) - y⁽ⁱ⁾)²`
-- Update: `θⱼ := θⱼ - α × ∂J(θ)/∂θⱼ`
-
-## ⚠️ Known Limitations
-
-- **Extrapolation Risk:** Predictions outside training range may be unreliable
-- **Single Feature:** Only considers mileage (ignores year, condition, etc.)
-- **Linear Assumption:** Real-world relationships may be non-linear
-
-## 🎓 Project Requirements
-
-**From ft_linear_regression PDF:**
-- ✅ Implement linear regression with gradient descent
-- ✅ No numpy.polyfit or similar cheating libraries
-- ✅ Use specified hypothesis function
-- ✅ Use specified training formulas
-- ✅ Simultaneous parameter updates
-
-## 📝 Author
-
-42 School Project - ft_linear_regression
-
----
-
-## 🎁 Bonus Features
-
-### 1. Data Visualization
-
-```bash
+# Visualization: scatter plot + regression line
 python3 bonus/visualize.py
-```
 
-**Features:**
-- Scatter plot of training data
-- Regression line overlay
-- Example predictions highlighted
-- Residual plot analysis
-
-### 2. Precision Metrics
-
-```bash
+# Precision metrics: R² score + MAPE
 python3 bonus/precision.py
 ```
 
-**Calculated Metrics:**
-- **R² Score**: 0.7330 (73.30% variance explained) ✓
-- **MAE**: 557.84 (average error)
-- **RMSE**: 667.57 (typical error)
-- **MAPE**: 9.65% (percentage error)
-
-**Model Assessment**: Good fit ✓
-
-### 3. Training Visualization
+## Requirements
 
 ```bash
-python3 bonus/visualize_training.py
+# Optional (for visualization only)
+pip install matplotlib
 ```
-
-**Shows:**
-- Cost function convergence over iterations
-- Log-scale convergence plot
-- Cost reduction per iteration
-- Training statistics and performance
-
-**Results:**
-- Initial Cost: 0.4304
-- Final Cost: 0.1335
-- Reduction: 69.0% ✓
-- Converged at: ~100 iterations
 
 ---
 
-**Experiment Ideas:**
-- Try different learning rates (0.01, 0.05, 0.2)
-- Adjust iteration count
-- Compare normalized vs. non-normalized training
+42 School Project - ft_linear_regression
