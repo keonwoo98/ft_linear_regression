@@ -116,7 +116,7 @@ def main():
     print("\n[3/5] Training model...")
 
     # You can adjust these hyperparameters
-    LEARNING_RATE = 0.1
+    LEARNING_RATE = 0.01
     ITERATIONS = 1000
 
     theta0_norm, theta1_norm, cost_history = gradient_descent(
